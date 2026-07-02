@@ -1,0 +1,69 @@
+.navbar {
+  width: 100%;
+  height: 55px;
+  padding: 0 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: #fbf8f0;
+  border-bottom: 1px solid #e6ddca;
+}
+
+.logo {
+  width: 200px;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  transform: translateY(1px);
+  margin-left: -10px;
+}
+
+.links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 34px;
+}
+
+.links a,
+.actions a {
+  color: #111;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.25s ease;
+}
+
+.links a:hover,
+.actions a:hover {
+  background: rgba(228, 195, 118, 0.14);
+  color: #c79a35;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.actions button {
+  border: 1px solid #d6ad45;
+  background: #e4c376;
+  color: #111;
+  padding: 10px 26px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.actions button:hover {
+  background: #d9b45b;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(214, 173, 69, 0.28);
+}

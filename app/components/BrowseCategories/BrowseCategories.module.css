@@ -1,0 +1,129 @@
+.section {
+  background: #f7f5ef;
+  padding: 20px 80px 40px;
+}
+
+.header {
+  text-align: center;
+  max-width: 780px;
+  margin: 0 auto 32px;
+}
+
+.eyebrow {
+  color: #b9892f;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  margin-bottom: 10px;
+}
+
+.header h2 {
+  font-size: 46px;
+  color: #111;
+  margin-bottom: 10px;
+}
+
+.header p {
+  color: #666;
+  font-size: 19px;
+}
+
+.tabs {
+  max-width: 1200px;
+  margin: 0 auto 12px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #eadfc8;
+}
+
+.tabs button {
+  background: transparent;
+  border: none;
+  padding: 14px 18px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+}
+
+.tabs button:hover {
+  color: #b9892f;
+}
+
+.activeTab {
+  color: #b9892f !important;
+  border-bottom-color: #b9892f !important;
+}
+
+.servicePanel {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid #eadfc8;
+  border-radius: 18px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  overflow: hidden;
+}
+
+.serviceCard {
+  min-height: 130px;
+  padding: 28px 18px;
+  text-align: center;
+  border-right: 1px solid #eadfc8;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.serviceCard:last-child {
+  border-right: none;
+}
+
+.serviceCard:hover {
+  background: #fffaf0;
+}
+
+.icon {
+  color: #b9892f;
+  font-size: 24px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.serviceCard h3 {
+  font-size: 17px;
+  margin-bottom: 8px;
+}
+
+.serviceCard p {
+  color: #777;
+  font-size: 14px;
+}
+
+@media (max-width: 900px) {
+  .section {
+    padding: 44px 24px 60px;
+  }
+
+  .header h2 {
+    font-size: 34px;
+  }
+
+  .tabs {
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+
+  .servicePanel {
+    grid-template-columns: 1fr;
+  }
+
+  .serviceCard {
+    border-right: none;
+    border-bottom: 1px solid #eadfc8;
+  }
+}
