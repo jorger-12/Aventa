@@ -5,13 +5,13 @@ export default function Navbar() {
   return (
     <nav className={styles.navbar}>
       <Image
-  src="/assets/logos/Alogo3.png"
-  alt="Aventa"
-  width={240}
-  height={48}
-  priority
-  className={styles.logo}
-/>
+        src="/assets/Logos/Alogo3.png"
+        alt="Aventa"
+        width={240}
+        height={48}
+        priority
+        className={styles.logo}
+      />
 
       <div className={styles.links}>
         <a href="#">Browse</a>
@@ -24,6 +24,8 @@ export default function Navbar() {
         <a href="#">Log In</a>
         <button>Sign Up</button>
       </div>
+
+      <button className={styles.menuButton}>☰</button>
     </nav>
   );
 }
