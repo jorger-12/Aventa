@@ -5,7 +5,7 @@ export default function Navbar() {
   return (
     <nav className={styles.navbar}>
       <Image
-        src="/assets/Logos/Alogo3.png"
+        src="/assets/logos/Alogo3.png"
         alt="Aventa"
         width={240}
         height={48}
