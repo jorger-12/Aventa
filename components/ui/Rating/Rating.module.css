@@ -1,0 +1,19 @@
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.stars {
+  color: var(--color-primary);
+}
+
+.value {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.reviews {
+  color: var(--color-text-secondary);
+}

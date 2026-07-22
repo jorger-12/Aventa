@@ -1,0 +1,32 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.gold {
+  background: var(--color-primary);
+  color: var(--color-text);
+}
+
+.dark {
+  background: var(--color-text);
+  color: var(--color-background);
+}
+
+.light {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.success {
+  background: #e3f5e8;
+  color: #216b35;
+}
