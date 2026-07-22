@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
-import "./globals.css";
+
 import Navbar from "@/components/layout/Navbar/Navbar";
 import Footer from "@/components/layout/Footer/Footer";
+import { AuthProvider } from "@/components/providers";
+
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Aventa",
@@ -16,9 +19,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Navbar />
-        {children}
-        <Footer />
+        <AuthProvider>
+          <Navbar />
+
+          {children}
+
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );
