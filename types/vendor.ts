@@ -48,9 +48,9 @@ export interface Vendor {
   businessName: string;
   slug: string;
 
-  primaryCategory: string;
-  categories: string[];
-  services: string[];
+  primaryCategoryId: string;
+  businessCategoryIds: string[];
+  businessTypeIds: string[];
 
   shortDescription: string;
   description: string;

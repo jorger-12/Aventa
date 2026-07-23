@@ -247,9 +247,11 @@ export async function createVendor(
       businessName: input.businessName.trim(),
       slug,
 
-      primaryCategory: input.primaryCategory,
-      categories,
-      services,
+      primaryCategoryId: input.primaryCategory,
+
+      businessCategoryIds: categories,
+
+      businessTypeIds: services,
 
       shortDescription: input.shortDescription.trim(),
 
@@ -317,12 +319,12 @@ export async function updateVendor(
     }
 
     const primaryCategory =
-      input.primaryCategory ?? existingVendor.primaryCategory;
+      input.primaryCategory ?? existingVendor.primaryCategoryId;
 
     const services =
       input.services !== undefined
         ? validateServices(input.services)
-        : existingVendor.services;
+        : existingVendor.businessTypeIds;
 
     validatePrimaryCategory(primaryCategory);
 
@@ -349,9 +351,9 @@ export async function updateVendor(
 
     const updates: UpdateVendorInput = {
       ...input,
-      primaryCategory,
-      categories,
-      services,
+      primaryCategoryId: primaryCategory,
+      businessCategoryIds: categories,
+      businessTypeIds: services,
     };
 
     if (input.businessName !== undefined) {
