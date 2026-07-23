@@ -1,5 +1,6 @@
 import {
   createAuthAccount,
+  reloadCurrentAuthUser,
   sendAuthPasswordResetEmail,
   sendCurrentUserVerificationEmail,
   signInAuthUser,
@@ -42,7 +43,8 @@ export async function signUp(input: SignUpInput): Promise<UserProfile> {
       lastName: validated.lastName,
       displayName: `${validated.firstName} ${validated.lastName}`,
       email: validated.email,
-      role: "customer",
+      role: input.role,
+      legalAccepted: validated.legalAccepted,
     });
 
     await sendCurrentUserVerificationEmail();
@@ -166,6 +168,54 @@ export async function synchronizeEmailVerification(
       "Unable to synchronize email verification.",
       operation,
       "EMAIL_VERIFICATION_SYNC_FAILED",
+      error,
+    );
+  }
+}
+
+export async function resendVerificationEmail(): Promise<void> {
+  const operation = "resendVerificationEmail";
+
+  try {
+    await sendCurrentUserVerificationEmail();
+  } catch (error) {
+    throw new ServiceError(
+      "Unable to resend the verification email.",
+      operation,
+      "VERIFICATION_EMAIL_RESEND_FAILED",
+      error,
+    );
+  }
+}
+
+export async function refreshCurrentUser(): Promise<{
+  userId: string;
+  email: string | null;
+  emailVerified: boolean;
+}> {
+  const operation = "refreshCurrentUser";
+
+  try {
+    const authUser = await reloadCurrentAuthUser();
+
+    if (authUser.emailVerified) {
+      await synchronizeEmailVerification(authUser.uid, true);
+    }
+
+    return {
+      userId: authUser.uid,
+      email: authUser.email,
+      emailVerified: authUser.emailVerified,
+    };
+  } catch (error) {
+    if (error instanceof ServiceError) {
+      throw error;
+    }
+
+    throw new ServiceError(
+      "Unable to refresh your verification status.",
+      operation,
+      "EMAIL_VERIFICATION_REFRESH_FAILED",
       error,
     );
   }

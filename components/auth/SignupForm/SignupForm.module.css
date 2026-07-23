@@ -1,0 +1,119 @@
+.form {
+  display: grid;
+  gap: 1rem;
+}
+
+.nameGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.formError {
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(180, 35, 24, 0.25);
+  border-radius: 10px;
+  background: rgba(180, 35, 24, 0.06);
+  color: #9f1c14;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.passwordHint {
+  margin: -0.25rem 0 0;
+  color: #777;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 540px) {
+  .nameGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.legalSection {
+  margin-top: 0.25rem;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  color: #555;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.checkboxLabel input {
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.22rem;
+  flex: 0 0 auto;
+  accent-color: #cea55a;
+  cursor: pointer;
+}
+
+.checkboxLabel a {
+  color: #9b752f;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.checkboxLabel a:hover {
+  color: #7d5f23;
+}
+
+.legalError {
+  margin: 0.5rem 0 0 1.75rem;
+  color: #b42318;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.accountTypeTabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border: 1px solid #ded8ca;
+  border-radius: 0.625rem;
+  background: #f4f1e9;
+}
+
+.accountTab,
+.activeAccountTab {
+  min-height: 2.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 0;
+  border-radius: 0.4375rem;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.accountTab {
+  background: transparent;
+  color: #6f685c;
+}
+
+.accountTab:hover {
+  color: #17140f;
+}
+
+.activeAccountTab {
+  background: #ffffff;
+  color: #17140f;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
+}
+
+.accountTab:focus-visible,
+.activeAccountTab:focus-visible {
+  outline: 2px solid #cea55a;
+  outline-offset: 2px;
+}

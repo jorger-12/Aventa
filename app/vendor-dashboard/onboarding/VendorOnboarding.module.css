@@ -1,0 +1,189 @@
+.page {
+  min-height: 100vh;
+  padding: 3rem 1.25rem;
+  background: #f7f5ef;
+}
+
+.container {
+  width: min(100%, 960px);
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  margin: 0.35rem 0 0.75rem;
+  color: #17140f;
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 1.1;
+}
+
+.header p {
+  max-width: 650px;
+  margin: 0;
+  color: #6f685c;
+  line-height: 1.7;
+}
+
+.eyebrow {
+  color: #9c752f !important;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  padding: 0.5rem;
+  border: 1px solid #ded8ca;
+  border-radius: 0.625rem;
+  background: #ffffff;
+  color: #756e61;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.step span {
+  display: grid;
+  width: 1.35rem;
+  height: 1.35rem;
+  place-items: center;
+  border-radius: 50%;
+  background: #f0ece2;
+  font-size: 0.7rem;
+}
+
+.activeStep {
+  border-color: #cea55a;
+  color: #17140f;
+  box-shadow: 0 0 0 1px #cea55a;
+}
+
+.activeStep span,
+.completedStep span {
+  background: #cea55a;
+  color: #17140f;
+}
+
+.completedStep {
+  color: #17140f;
+}
+
+.card {
+  overflow: hidden;
+  border: 1px solid #e2ddd1;
+  border-radius: 1rem;
+  background: #ffffff;
+  box-shadow: 0 12px 35px rgb(30 24 13 / 8%);
+}
+
+.stepContent {
+  min-height: 320px;
+  padding: 2rem;
+}
+
+.stepContent h2 {
+  margin: 0.4rem 0 0.75rem;
+  color: #17140f;
+  font-size: 1.7rem;
+}
+
+.stepContent p {
+  color: #6f685c;
+}
+
+.stepLabel {
+  margin: 0;
+  color: #9c752f !important;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 2rem;
+  border-top: 1px solid #ebe6dc;
+  background: #fcfbf8;
+}
+
+.primaryButton,
+.secondaryButton {
+  min-width: 110px;
+  min-height: 44px;
+  padding: 0.7rem 1rem;
+  border-radius: 0.625rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primaryButton {
+  border: 1px solid #17140f;
+  background: #17140f;
+  color: #ffffff;
+}
+
+.secondaryButton {
+  border: 1px solid #d8d1c3;
+  background: #ffffff;
+  color: #17140f;
+}
+
+.primaryButton:disabled,
+.secondaryButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.primaryButton:focus-visible,
+.secondaryButton:focus-visible,
+.step:focus-visible {
+  outline: 2px solid #cea55a;
+  outline-offset: 2px;
+}
+
+@media (max-width: 760px) {
+  .page {
+    padding: 2rem 1rem;
+  }
+
+  .steps {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 0.4rem;
+  }
+
+  .step {
+    min-width: 110px;
+    flex-shrink: 0;
+  }
+
+  .stepContent {
+    min-height: 280px;
+    padding: 1.5rem;
+  }
+
+  .actions {
+    padding: 1rem 1.5rem;
+  }
+}

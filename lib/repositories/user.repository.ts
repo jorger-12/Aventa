@@ -10,9 +10,29 @@ import {
 
 import { firestore } from "@/lib/firebase/client";
 import { RepositoryError } from "@/lib/repositories";
-import type { UserProfile } from "@/types";
+
+import {
+  CURRENT_DISCLAIMER_VERSION,
+  CURRENT_PRIVACY_VERSION,
+  CURRENT_TERMS_VERSION,
+  type UserProfile,
+} from "@/types/user";
 
 import { COLLECTIONS } from "./collections";
+
+interface FirestoreLegalAcceptance {
+  termsAccepted?: boolean;
+  termsAcceptedAt?: Timestamp;
+  termsVersion?: string;
+
+  privacyAccepted?: boolean;
+  privacyAcceptedAt?: Timestamp;
+  privacyVersion?: string;
+
+  disclaimerAccepted?: boolean;
+  disclaimerAcceptedAt?: Timestamp;
+  disclaimerVersion?: string;
+}
 
 interface FirestoreUser {
   firstName: string;
@@ -28,11 +48,19 @@ interface FirestoreUser {
   emailVerified: boolean;
   active: boolean;
 
+  legal?: FirestoreLegalAcceptance;
+
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
 
 function fromFirestore(id: string, data: FirestoreUser): UserProfile {
+  const createdAt = data.createdAt?.toDate?.() ?? new Date();
+
+  const updatedAt = data.updatedAt?.toDate?.() ?? createdAt;
+
+  const legal = data.legal;
+
   return {
     id,
 
@@ -49,8 +77,29 @@ function fromFirestore(id: string, data: FirestoreUser): UserProfile {
     emailVerified: data.emailVerified,
     active: data.active,
 
-    createdAt: data.createdAt.toDate(),
-    updatedAt: data.updatedAt.toDate(),
+    legal: {
+      termsAccepted: legal?.termsAccepted ?? false,
+
+      termsAcceptedAt: legal?.termsAcceptedAt?.toDate?.() ?? createdAt,
+
+      termsVersion: legal?.termsVersion ?? "unrecorded",
+
+      privacyAccepted: legal?.privacyAccepted ?? false,
+
+      privacyAcceptedAt: legal?.privacyAcceptedAt?.toDate?.() ?? createdAt,
+
+      privacyVersion: legal?.privacyVersion ?? "unrecorded",
+
+      disclaimerAccepted: legal?.disclaimerAccepted ?? false,
+
+      disclaimerAcceptedAt:
+        legal?.disclaimerAcceptedAt?.toDate?.() ?? createdAt,
+
+      disclaimerVersion: legal?.disclaimerVersion ?? "unrecorded",
+    },
+
+    createdAt,
+    updatedAt,
   };
 }
 
@@ -64,11 +113,22 @@ export interface CreateUserInput {
   email: string;
 
   role: UserProfile["role"];
+
+  legalAccepted: boolean;
 }
 
 export async function createUser(input: CreateUserInput): Promise<UserProfile> {
   try {
+    if (!input.legalAccepted) {
+      throw new RepositoryError(
+        "Legal policies must be accepted before creating an account.",
+        "createUser",
+      );
+    }
+
     const ref = doc(collection(firestore, COLLECTIONS.users), input.id);
+
+    const now = Timestamp.now();
 
     await setDoc(ref, {
       firstName: input.firstName,
@@ -79,13 +139,25 @@ export async function createUser(input: CreateUserInput): Promise<UserProfile> {
 
       role: input.role,
 
-      avatarUrl: undefined,
-
       emailVerified: false,
       active: true,
 
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
+      legal: {
+        termsAccepted: true,
+        termsAcceptedAt: now,
+        termsVersion: CURRENT_TERMS_VERSION,
+
+        privacyAccepted: true,
+        privacyAcceptedAt: now,
+        privacyVersion: CURRENT_PRIVACY_VERSION,
+
+        disclaimerAccepted: true,
+        disclaimerAcceptedAt: now,
+        disclaimerVersion: CURRENT_DISCLAIMER_VERSION,
+      },
+
+      createdAt: now,
+      updatedAt: now,
     });
 
     const snapshot = await getDoc(ref);
@@ -96,6 +168,10 @@ export async function createUser(input: CreateUserInput): Promise<UserProfile> {
 
     return fromFirestore(snapshot.id, snapshot.data() as FirestoreUser);
   } catch (error) {
+    if (error instanceof RepositoryError) {
+      throw error;
+    }
+
     throw new RepositoryError("Unable to create user.", "createUser", error);
   }
 }

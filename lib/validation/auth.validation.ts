@@ -114,14 +114,32 @@ function validateName(value: string, field: "firstName" | "lastName"): string {
 }
 
 export function validateSignUpInput(input: SignUpInput): SignUpInput {
+  if (!input.legalAccepted) {
+    throw new ValidationError(
+      "You must agree to the Terms of Service, Privacy Policy, and Platform Disclaimer.",
+      "LEGAL_ACCEPTANCE_REQUIRED",
+      "legalAccepted",
+    );
+  }
+
+  const role =
+    input.role === "customer" || input.role === "vendor" ? input.role : null;
+
+  if (!role) {
+    throw new ValidationError(
+      "Please select a valid account type.",
+      "INVALID_ROLE",
+      "role",
+    );
+  }
+
   return {
     firstName: validateName(input.firstName, "firstName"),
-
     lastName: validateName(input.lastName, "lastName"),
-
     email: validateEmail(input.email),
-
     password: validatePassword(input.password),
+    legalAccepted: true,
+    role,
   };
 }
 

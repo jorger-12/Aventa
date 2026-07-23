@@ -1,6 +1,7 @@
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  reload,
   sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
@@ -204,4 +205,40 @@ export function subscribeToAuthState(
       callback(null);
     },
   );
+}
+
+export async function reloadCurrentAuthUser(): Promise<AuthUser> {
+  const operation = "reloadCurrentAuthUser";
+
+  try {
+    const currentUser = firebaseAuth.currentUser;
+
+    if (!currentUser) {
+      throw new AuthError(
+        "You must be signed in to verify your email.",
+        operation,
+        "AUTH_USER_NOT_FOUND",
+      );
+    }
+
+    await reload(currentUser);
+
+    const refreshedUser = firebaseAuth.currentUser;
+
+    if (!refreshedUser) {
+      throw new AuthError(
+        "Your authentication session could not be refreshed.",
+        operation,
+        "AUTH_USER_NOT_FOUND",
+      );
+    }
+
+    return mapAuthUser(refreshedUser);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      throw error;
+    }
+
+    throw createReadableAuthError(error, operation);
+  }
 }

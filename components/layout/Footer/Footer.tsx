@@ -1,4 +1,6 @@
 import Image from "next/image";
+import Link from "next/link";
+
 import styles from "./Footer.module.css";
 
 export default function Footer() {
@@ -56,9 +58,18 @@ export default function Footer() {
 
           <div>
             <h3>Legal</h3>
-            <a href="#">Privacy</a>
-            <a href="#">Terms</a>
-            <a href="#">Cookies</a>
+
+            <Link href="/privacy">
+              Privacy Policy
+            </Link>
+
+            <Link href="/terms">
+              Terms of Service
+            </Link>
+
+            <Link href="/disclaimer">
+              Disclaimer
+            </Link>
           </div>
         </div>
       </div>

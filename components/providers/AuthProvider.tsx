@@ -9,10 +9,7 @@ import {
   type ReactNode,
 } from "react";
 
-import {
-  subscribeToAuthState,
-  type AuthUser,
-} from "@/lib/auth";
+import { subscribeToAuthState, type AuthUser } from "@/lib/auth";
 
 import { getUserById } from "@/lib/repositories";
 import { signOut } from "@/lib/services";
@@ -30,59 +27,59 @@ interface AuthContextValue {
   logout: () => Promise<void>;
 }
 
-const AuthContext =
-  createContext<AuthContextValue | undefined>(
-    undefined,
-  );
+const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 interface AuthProviderProps {
   children: ReactNode;
 }
 
-export function AuthProvider({
-  children,
-}: AuthProviderProps) {
-  const [user, setUser] =
-    useState<AuthUser | null>(null);
+export function AuthProvider({ children }: AuthProviderProps) {
+  const [user, setUser] = useState<AuthUser | null>(null);
 
-  const [profile, setProfile] =
-    useState<UserProfile | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
 
-  const [loading, setLoading] =
-    useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = subscribeToAuthState(
-      async (authUser) => {
-        setLoading(true);
-        setUser(authUser);
+    let active = true;
 
-        if (!authUser) {
-          setProfile(null);
-          setLoading(false);
-          return;
-        }
+    const unsubscribe = subscribeToAuthState(async (authUser) => {
+      if (!active) {
+        return;
+      }
 
-        try {
-          const userProfile = await getUserById(
-            authUser.uid,
-          );
+      setLoading(true);
+      setUser(authUser);
 
+      if (!authUser) {
+        setProfile(null);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const userProfile = await getUserById(authUser.uid);
+
+        if (active) {
           setProfile(userProfile);
-        } catch (error) {
-          console.error(
-            "Unable to load the authenticated user profile:",
-            error,
-          );
+        }
+      } catch (error) {
+        console.error("Unable to load the authenticated user profile:", error);
 
+        if (active) {
           setProfile(null);
-        } finally {
+        }
+      } finally {
+        if (active) {
           setLoading(false);
         }
-      },
-    );
+      }
+    });
 
-    return unsubscribe;
+    return () => {
+      active = false;
+      unsubscribe();
+    };
   }, []);
 
   async function refreshProfile(): Promise<void> {
@@ -91,8 +88,7 @@ export function AuthProvider({
       return;
     }
 
-    const refreshedProfile =
-      await getUserById(user.uid);
+    const refreshedProfile = await getUserById(user.uid);
 
     setProfile(refreshedProfile);
   }
@@ -118,20 +114,14 @@ export function AuthProvider({
     [user, profile, loading],
   );
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth(): AuthContextValue {
   const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error(
-      "useAuth must be used within an AuthProvider.",
-    );
+    throw new Error("useAuth must be used within an AuthProvider.");
   }
 
   return context;

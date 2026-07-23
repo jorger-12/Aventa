@@ -68,22 +68,37 @@ const vendorConverter: FirestoreDataConverter<Vendor, FirestoreVendor> = {
       ownerId: data.ownerId,
       businessName: data.businessName,
       slug: data.slug,
+
       primaryCategory: data.primaryCategory,
       categories: data.categories ?? [],
       services: data.services ?? [],
+
+      shortDescription: data.shortDescription ?? "",
       description: data.description,
+
       phone: data.phone,
       email: data.email,
       website: data.website,
+
+      facebook: data.facebook,
+      instagram: data.instagram,
+      tiktok: data.tiktok,
+
       media: normalizeMedia(data.media),
       locations: (data.locations ?? []).map(normalizeLocation),
+
       subscriptionPlan: data.subscriptionPlan,
       subscriptionStatus: data.subscriptionStatus,
+
       rating: data.rating ?? 0,
       reviewCount: data.reviewCount ?? 0,
+
+      profileCompleted: data.profileCompleted ?? false,
+
       verified: data.verified ?? false,
       featured: data.featured ?? false,
       active: data.active ?? false,
+
       createdAt: toDate(data.createdAt),
       updatedAt: toDate(data.updatedAt),
     };
@@ -157,10 +172,14 @@ export async function createVendor(input: CreateVendorInput): Promise<Vendor> {
       primaryCategory: input.primaryCategory,
       categories: input.categories,
       services: input.services,
+      shortDescription: input.shortDescription,
       description: input.description,
       phone: input.phone,
       email: input.email,
       website: input.website,
+      facebook: input.facebook,
+      instagram: input.instagram,
+      tiktok: input.tiktok,
       media: normalizeMedia(input.media),
       locations: input.locations.map((location) => ({
         ...location,
@@ -176,6 +195,7 @@ export async function createVendor(input: CreateVendorInput): Promise<Vendor> {
       subscriptionStatus: input.subscriptionStatus,
       rating: 0,
       reviewCount: 0,
+      profileCompleted: input.profileCompleted,
       verified: input.verified,
       featured: input.featured,
       active: input.active,

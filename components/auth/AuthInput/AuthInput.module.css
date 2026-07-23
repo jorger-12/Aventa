@@ -57,3 +57,36 @@
   font-size: 0.82rem;
   line-height: 1.4;
 }
+
+.inputWrapper {
+  position: relative;
+}
+
+.passwordInput {
+  padding-right: 4.5rem;
+}
+
+.passwordToggle {
+  position: absolute;
+  top: 50%;
+  right: 0.85rem;
+  transform: translateY(-50%);
+  padding: 0.25rem;
+  border: 0;
+  background: transparent;
+  color: #9b752f;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.passwordToggle:hover {
+  text-decoration: underline;
+}
+
+.passwordToggle:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid rgba(206, 165, 90, 0.55);
+  outline-offset: 2px;
+}

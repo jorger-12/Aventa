@@ -1,0 +1,30 @@
+.form {
+  display: grid;
+  gap: 1rem;
+}
+
+.formError {
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(180, 35, 24, 0.25);
+  border-radius: 10px;
+  background: rgba(180, 35, 24, 0.06);
+  color: #9f1c14;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.forgotPassword {
+  margin-top: -0.2rem;
+  text-align: right;
+}
+
+.forgotPassword a {
+  color: #9b752f;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.forgotPassword a:hover {
+  text-decoration: underline;
+}

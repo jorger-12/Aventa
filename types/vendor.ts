@@ -1,7 +1,4 @@
-import type {
-  SubscriptionPlan,
-  SubscriptionStatus,
-} from "./subscription";
+import type { SubscriptionPlan, SubscriptionStatus } from "./subscription";
 
 export interface VendorMedia {
   logoUrl?: string;
@@ -55,11 +52,16 @@ export interface Vendor {
   categories: string[];
   services: string[];
 
+  shortDescription: string;
   description: string;
 
   phone: string;
   email: string;
   website?: string;
+
+  facebook?: string;
+  instagram?: string;
+  tiktok?: string;
 
   media: VendorMedia;
   locations: VendorLocation[];
@@ -69,6 +71,8 @@ export interface Vendor {
 
   rating: number;
   reviewCount: number;
+
+  profileCompleted: boolean;
 
   verified: boolean;
   featured: boolean;

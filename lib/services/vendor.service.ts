@@ -1,7 +1,7 @@
 import {
   getCategoryById,
-  getCategoryIdsFromServices,
-  getServiceById,
+  getCategoryIdsFromBusinessTypes,
+  getBusinessTypeById,
 } from "@/data/categories";
 
 import {
@@ -33,11 +33,16 @@ export interface CreateVendorServiceInput {
   primaryCategory: string;
   services: string[];
 
+  shortDescription: string;
   description: string;
 
   phone: string;
   email: string;
   website?: string;
+
+  facebook?: string;
+  instagram?: string;
+  tiktok?: string;
 
   media?: Partial<VendorMedia>;
   locations?: VendorLocation[];
@@ -141,7 +146,7 @@ function validateDescription(description: string): void {
 function validatePrimaryCategory(primaryCategory: string): void {
   const category = getCategoryById(primaryCategory);
 
-  if (!category || !category.active) {
+  if (!category) {
     throw new ServiceError(
       "The selected primary category is invalid or inactive.",
       "validatePrimaryCategory",
@@ -162,9 +167,9 @@ function validateServices(serviceIds: string[]): string[] {
   }
 
   for (const serviceId of uniqueServiceIds) {
-    const service = getServiceById(serviceId);
+    const service = getBusinessTypeById(serviceId);
 
-    if (!service || !service.active) {
+    if (!service) {
       throw new ServiceError(
         `The selected service "${serviceId}" is invalid or inactive.`,
         "validateServices",
@@ -180,7 +185,7 @@ function validatePrimaryCategoryMatchesServices(
   primaryCategory: string,
   serviceIds: string[],
 ): string[] {
-  const categoryIds = getCategoryIdsFromServices(serviceIds);
+  const categoryIds = getCategoryIdsFromBusinessTypes(serviceIds);
 
   if (!categoryIds.includes(primaryCategory)) {
     throw new ServiceError(
@@ -246,17 +251,25 @@ export async function createVendor(
       categories,
       services,
 
+      shortDescription: input.shortDescription.trim(),
+
       description: input.description.trim(),
 
       phone: input.phone.trim(),
       email: normalizeEmail(input.email),
       website: normalizeWebsite(input.website),
 
+      facebook: input.facebook,
+      instagram: input.instagram,
+      tiktok: input.tiktok,
+
       media: createDefaultMedia(input.media),
       locations: input.locations ?? [],
 
       subscriptionPlan: input.subscriptionPlan,
       subscriptionStatus: input.subscriptionStatus,
+
+      profileCompleted: false,
 
       verified: false,
       featured: false,
