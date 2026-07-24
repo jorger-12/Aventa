@@ -1,0 +1,15 @@
+.counter {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  text-align: right;
+}
+
+.warning {
+  color: #9a6700;
+}
+
+.limit {
+  color: #b42318;
+}

@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import Badge from "@/components/ui/Badge/Badge";
-import Rating from "@/components/ui/Rating/Rating";
+import Badge from "@/components/ui/feedback/Badge/Badge";
+import Rating from "@/components/ui/feedback/Rating/Rating";
 
 import styles from "./VendorCard.module.css";
 

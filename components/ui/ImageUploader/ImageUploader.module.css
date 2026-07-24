@@ -1,0 +1,255 @@
+.uploader {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.heading {
+  margin: 0;
+  color: #17130d;
+  font-size: 1.25rem;
+  line-height: 1.3;
+}
+
+.description {
+  margin: 0.35rem 0 0;
+  color: #6f675b;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.imageCount {
+  flex-shrink: 0;
+  border: 1px solid rgba(206, 165, 90, 0.3);
+  border-radius: 999px;
+  background: #fbfaf6;
+  color: #806b43;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.logoDropzone {
+  width: min(100%, 280px);
+}
+
+.coverDropzone {
+  width: 100%;
+}
+
+.logoPreviewContainer,
+.coverPreviewContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.logoPreview {
+  display: block;
+  width: 230px;
+  height: 230px;
+  border: 1px solid rgba(206, 165, 90, 0.28);
+  border-radius: 18px;
+  background: #fbfaf6;
+  object-fit: contain;
+  padding: 1rem;
+}
+
+.coverPreview {
+  display: block;
+  width: 100%;
+  max-height: 440px;
+  aspect-ratio: 16 / 7;
+  border: 1px solid rgba(206, 165, 90, 0.28);
+  border-radius: 18px;
+  object-fit: cover;
+}
+
+.previewActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.replaceDropzone {
+  width: 180px;
+}
+
+.replaceDropzone :global([role="button"]) {
+  min-height: auto;
+  border-style: solid;
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+}
+
+.replaceDropzone :global([role="button"] > span:first-of-type) {
+  display: none;
+}
+
+.replaceDropzone :global([role="button"] > span:last-of-type) {
+  display: none;
+}
+
+.removeButton {
+  border: none;
+  background: transparent;
+  color: #9e2f2f;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  padding: 0.75rem;
+}
+
+.removeButton:hover {
+  text-decoration: underline;
+}
+
+.removeButton:focus-visible {
+  outline: 3px solid rgba(158, 47, 47, 0.2);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.removeButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.galleryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+}
+
+.galleryItem {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1;
+  border: 1px solid rgba(206, 165, 90, 0.28);
+  border-radius: 16px;
+  background: #f7f5ef;
+}
+
+.galleryImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.removeOverlayButton {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 999px;
+  background: rgba(18, 16, 13, 0.82);
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 1.35rem;
+  line-height: 1;
+  opacity: 0;
+  transform: scale(0.92);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease,
+    background-color 160ms ease;
+}
+
+.galleryItem:hover .removeOverlayButton,
+.removeOverlayButton:focus-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.removeOverlayButton:hover {
+  background: rgba(122, 31, 31, 0.92);
+}
+
+.galleryDropzone {
+  min-width: 0;
+  aspect-ratio: 1;
+}
+
+.galleryDropzone :global([role="button"]) {
+  height: 100%;
+  min-height: 160px;
+  border-radius: 16px;
+  padding: 1rem;
+}
+
+.galleryDropzone :global([role="button"] > span:nth-of-type(2)) {
+  font-size: 0.9rem;
+}
+
+.galleryDropzone :global([role="button"] > span:last-of-type) {
+  display: none;
+}
+
+.errorMessage {
+  margin: 0;
+  border: 1px solid rgba(158, 47, 47, 0.22);
+  border-radius: 10px;
+  background: rgba(158, 47, 47, 0.06);
+  color: #8f2929;
+  padding: 0.75rem 0.9rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.limitMessage {
+  margin: 0;
+  color: #756b5d;
+  font-size: 0.88rem;
+}
+
+@media (max-width: 640px) {
+  .header {
+    flex-direction: column;
+  }
+
+  .logoPreview {
+    width: 190px;
+    height: 190px;
+  }
+
+  .coverPreview {
+    aspect-ratio: 16 / 9;
+  }
+
+  .previewActions {
+    width: 100%;
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .replaceDropzone {
+    width: 100%;
+  }
+
+  .removeButton {
+    align-self: flex-start;
+  }
+
+  .galleryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .removeOverlayButton {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

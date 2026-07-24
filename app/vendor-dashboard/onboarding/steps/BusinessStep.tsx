@@ -2,6 +2,14 @@
 
 import styles from "../VendorOnboarding.module.css";
 
+import {
+  CharacterCounter,
+  Field,
+  FieldGroup,
+  Input,
+  Textarea,
+} from "@/components/ui";
+
 export interface BusinessStepData {
   businessName: string;
   shortDescription: string;
@@ -22,71 +30,67 @@ export default function BusinessStep({ value, onChange }: BusinessStepProps) {
   }
 
   return (
-    <div className={styles.formSection}>
-      <div className={styles.field}>
-        <label htmlFor="businessName">
-          Business name
-          <span aria-hidden="true">*</span>
-        </label>
-
-        <input
+    <FieldGroup
+      title="Business Information"
+      description="Tell customers who you are and what you do."
+    >
+      <Field
+        label="Business name"
+        htmlFor="businessName"
+        required
+        helperText="Enter the public business name customers will see."
+      >
+        <Input
           id="businessName"
-          name="businessName"
-          type="text"
-          maxLength={80}
           value={value.businessName}
-          placeholder="Example: Luna Event Photography"
           onChange={(event) => updateField("businessName", event.target.value)}
+          placeholder="Aventa Events"
+          autoComplete="organization"
+          maxLength={80}
+          required
         />
 
-        <p className={styles.fieldHint}>
-          {value.businessName.length}/80 characters
-        </p>
-      </div>
+        <CharacterCounter current={value.businessName.length} max={80} />
+      </Field>
 
-      <div className={styles.field}>
-        <label htmlFor="shortDescription">
-          Short description
-          <span aria-hidden="true">*</span>
-        </label>
-
-        <input
+      <Field
+        label="Short description"
+        htmlFor="shortDescription"
+        required
+        helperText="Write one short sentence that summarizes the business."
+      >
+        <Input
           id="shortDescription"
-          name="shortDescription"
-          type="text"
-          maxLength={120}
           value={value.shortDescription}
-          placeholder="A short sentence customers will see on your vendor card."
           onChange={(event) =>
             updateField("shortDescription", event.target.value)
           }
+          placeholder="A short sentence customers can quickly understand."
+          maxLength={120}
+          required
         />
 
-        <p className={styles.fieldHint}>
-          {value.shortDescription.length}/120 characters
-        </p>
-      </div>
+        <CharacterCounter current={value.shortDescription.length} max={120} />
+      </Field>
 
-      <div className={styles.field}>
-        <label htmlFor="description">
-          Business description
-          <span aria-hidden="true">*</span>
-        </label>
-
-        <textarea
+      <Field
+        label="Business description"
+        htmlFor="description"
+        required
+        helperText="Explain the services, experience, specialties, and qualities that make the business different."
+      >
+        <Textarea
           id="description"
-          name="description"
-          rows={7}
-          maxLength={1000}
           value={value.description}
-          placeholder="Describe your services, experience, specialties, and what makes your business different."
           onChange={(event) => updateField("description", event.target.value)}
+          placeholder="Describe your services, experience, specialties, and what makes your business unique."
+          maxLength={1000}
+          rows={7}
+          required
         />
 
-        <p className={styles.fieldHint}>
-          {value.description.length}/1000 characters
-        </p>
-      </div>
-    </div>
+        <CharacterCounter current={value.description.length} max={1000} />
+      </Field>
+    </FieldGroup>
   );
 }

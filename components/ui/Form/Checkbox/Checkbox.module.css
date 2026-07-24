@@ -1,0 +1,84 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  cursor: pointer;
+}
+
+.checkbox {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.control {
+  position: relative;
+  flex-shrink: 0;
+
+  width: 1.25rem;
+  height: 1.25rem;
+
+  margin-top: 0.1rem;
+
+  border: 1px solid var(--color-border);
+  border-radius: 0.3rem;
+
+  background: var(--color-background);
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.checkbox:checked + .control {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+}
+
+.checkbox:checked + .control::after {
+  content: "";
+
+  position: absolute;
+  left: 0.37rem;
+  top: 0.15rem;
+
+  width: 0.28rem;
+  height: 0.58rem;
+
+  border: solid #ffffff;
+  border-width: 0 0.12rem 0.12rem 0;
+
+  transform: rotate(45deg);
+}
+
+.checkbox:focus-visible + .control {
+  box-shadow: 0 0 0 3px rgba(206, 165, 90, 0.2);
+}
+
+.checkbox:disabled + .control,
+.checkbox:disabled ~ .labelText {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.labelText {
+  color: var(--color-text);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.helperText {
+  margin: 0 0 0 1.95rem;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}

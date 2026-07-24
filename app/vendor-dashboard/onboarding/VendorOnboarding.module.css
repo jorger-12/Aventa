@@ -187,3 +187,235 @@
     padding: 1rem 1.5rem;
   }
 }
+
+.mediaSectionHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.mediaSectionHeader h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.mediaHelper {
+  margin: 0.35rem 0 0;
+  color: #6f675b;
+  line-height: 1.5;
+}
+
+.logoUploadCard,
+.coverUploadCard,
+.galleryAddTile {
+  border: 1px dashed rgba(206, 165, 90, 0.8);
+  background: #fbfaf6;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.logoUploadCard:hover,
+.coverUploadCard:hover,
+.galleryAddTile:hover {
+  border-color: #a97f31;
+  background: #f7f1e5;
+  transform: translateY(-1px);
+}
+
+.logoUploadCard {
+  width: min(100%, 260px);
+  min-height: 220px;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 1.5rem;
+}
+
+.coverUploadCard {
+  width: 100%;
+  min-height: 260px;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 1.5rem;
+}
+
+.uploadIcon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: rgba(206, 165, 90, 0.15);
+  color: #9a722a;
+  font-size: 1.8rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.uploadTitle {
+  margin-top: 0.35rem;
+  color: #17130d;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.uploadHint {
+  color: #786f61;
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+.logoUploadPreview,
+.coverUploadPreview {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.logoPreview {
+  width: 220px;
+  height: 220px;
+  object-fit: contain;
+  border: 1px solid rgba(206, 165, 90, 0.28);
+  border-radius: 18px;
+  background: #fbfaf6;
+  padding: 1rem;
+}
+
+.coverPreview {
+  display: block;
+  width: 100%;
+  max-height: 440px;
+  aspect-ratio: 16 / 7;
+  object-fit: cover;
+  border: 1px solid rgba(206, 165, 90, 0.28);
+  border-radius: 18px;
+}
+
+.mediaPreviewActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.removeTextButton {
+  border: none;
+  background: transparent;
+  color: #9e2f2f;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  padding: 0.75rem;
+}
+
+.removeTextButton:hover {
+  text-decoration: underline;
+}
+
+.galleryCount {
+  flex-shrink: 0;
+  color: #806b43;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.galleryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+  gap: 1rem;
+}
+
+.galleryItem {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1;
+  border: 1px solid rgba(206, 165, 90, 0.28);
+  border-radius: 16px;
+  background: #f7f5ef;
+}
+
+.galleryPreview {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.galleryRemoveButton {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 999px;
+  background: rgba(18, 16, 13, 0.78);
+  color: white;
+  cursor: pointer;
+  font-size: 1.3rem;
+  line-height: 1;
+  opacity: 0;
+  transform: scale(0.92);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+.galleryItem:hover .galleryRemoveButton,
+.galleryRemoveButton:focus-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.galleryAddTile {
+  min-height: 155px;
+  aspect-ratio: 1;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  color: #5e4b28;
+  font: inherit;
+  font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .mediaSectionHeader {
+    flex-direction: column;
+  }
+
+  .coverUploadCard {
+    min-height: 200px;
+  }
+
+  .logoPreview {
+    width: 180px;
+    height: 180px;
+  }
+
+  .galleryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .galleryRemoveButton {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
