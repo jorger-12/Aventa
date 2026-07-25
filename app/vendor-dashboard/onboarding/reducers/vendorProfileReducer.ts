@@ -7,8 +7,10 @@ export interface VendorOnboardingData {
   shortDescription: string;
   description: string;
 
-  primaryCategoryId: string;
-  businessTypeIds: string[];
+  serviceCategories: {
+    categoryId: string;
+    businessTypeIds: string[];
+  }[];
 
   phone: string;
   email: string;
@@ -28,8 +30,12 @@ export const initialVendorProfile: VendorOnboardingData = {
   shortDescription: "",
   description: "",
 
-  primaryCategoryId: "",
-  businessTypeIds: [],
+  serviceCategories: [
+    {
+      categoryId: "",
+      businessTypeIds: [],
+    },
+  ],
 
   phone: "",
   email: "",

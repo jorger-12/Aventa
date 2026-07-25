@@ -1,0 +1,75 @@
+.card {
+  background: #ffffff;
+  border: 1px solid #e6dfd2;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.03),
+    0 10px 30px rgba(0, 0, 0, 0.04);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+
+  border-color: #cea55a;
+
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.06),
+    0 16px 40px rgba(0, 0, 0, 0.08);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  margin-bottom: 1.25rem;
+}
+
+.title {
+  margin: 0;
+
+  font-size: 1.1rem;
+  font-weight: 700;
+
+  color: #1d1d1d;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.editButton {
+  border: 1px solid #cea55a;
+  border-radius: 8px;
+  padding: 0.45rem 0.8rem;
+
+  background: transparent;
+  color: #8a651f;
+
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.editButton:hover {
+  background: #cea55a;
+  color: #111111;
+}

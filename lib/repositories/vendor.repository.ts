@@ -143,6 +143,32 @@ function normalizeLocation(location: VendorLocation): VendorLocation {
   };
 }
 
+function removeUndefinedValues<T>(value: T): T {
+  if (Array.isArray(value)) {
+    return value
+      .filter((item) => item !== undefined)
+      .map((item) => removeUndefinedValues(item)) as T;
+  }
+
+  if (value instanceof Date) {
+    return value;
+  }
+
+  if (typeof value === "object" && value !== null) {
+    if ("_methodName" in value) {
+      return value;
+    }
+
+    return Object.fromEntries(
+      Object.entries(value)
+        .filter(([, item]) => item !== undefined)
+        .map(([key, item]) => [key, removeUndefinedValues(item)]),
+    ) as T;
+  }
+
+  return value;
+}
+
 function vendorsCollection() {
   return collection(firestore, COLLECTIONS.vendors).withConverter(
     vendorConverter,
@@ -205,7 +231,7 @@ export async function createVendor(input: CreateVendorInput): Promise<Vendor> {
 
     const plainVendorRef = doc(firestore, COLLECTIONS.vendors, vendorRef.id);
 
-    await setDoc(plainVendorRef, vendor);
+    await setDoc(plainVendorRef, removeUndefinedValues(vendor));
 
     const createdVendor = await getVendorById(vendorRef.id);
 
@@ -215,7 +241,13 @@ export async function createVendor(input: CreateVendorInput): Promise<Vendor> {
 
     return createdVendor;
   } catch (error) {
-    throw new RepositoryError("Failed to create vendor.", operation, error);
+    console.error("Repository createVendor error:", error);
+
+    if (error instanceof Error) {
+      console.error("Message:", error.message);
+    }
+
+    throw error;
   }
 }
 
@@ -284,10 +316,13 @@ export async function updateVendor(
   try {
     const vendorRef = doc(firestore, COLLECTIONS.vendors, vendorId);
 
-    await updateDoc(vendorRef, {
-      ...updates,
-      updatedAt: serverTimestamp(),
-    });
+    await updateDoc(
+      vendorRef,
+      removeUndefinedValues({
+        ...updates,
+        updatedAt: serverTimestamp(),
+      }),
+    );
 
     const updatedVendor = await getVendorById(vendorId);
 

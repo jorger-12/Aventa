@@ -24,14 +24,18 @@ import type { Vendor, VendorLocation, VendorMedia } from "@/types/vendor";
 
 import { ServiceError } from "./service-error";
 
+export interface VendorServiceCategoryInput {
+  categoryId: string;
+  businessTypeIds: string[];
+}
+
 export interface CreateVendorServiceInput {
   ownerId: string;
 
   businessName: string;
   slug?: string;
 
-  primaryCategory: string;
-  services: string[];
+  serviceCategories: VendorServiceCategoryInput[];
 
   shortDescription: string;
   description: string;
@@ -55,14 +59,18 @@ export interface UpdateVendorServiceInput {
   businessName?: string;
   slug?: string;
 
-  primaryCategory?: string;
-  services?: string[];
+  serviceCategories?: VendorServiceCategoryInput[];
 
+  shortDescription?: string;
   description?: string;
 
   phone?: string;
   email?: string;
   website?: string;
+
+  facebook?: string;
+  instagram?: string;
+  tiktok?: string;
 
   media?: VendorMedia;
   locations?: VendorLocation[];
@@ -70,7 +78,17 @@ export interface UpdateVendorServiceInput {
   subscriptionPlan?: SubscriptionPlan;
   subscriptionStatus?: SubscriptionStatus;
 
+  profileCompleted?: boolean;
+
+  verified?: boolean;
+  featured?: boolean;
   active?: boolean;
+}
+
+interface ValidatedServiceCategories {
+  primaryCategoryId: string;
+  businessCategoryIds: string[];
+  businessTypeIds: string[];
 }
 
 function normalizeSlug(value: string): string {
@@ -89,10 +107,14 @@ function normalizeEmail(email: string): string {
   return email.trim().toLowerCase();
 }
 
-function normalizeWebsite(website?: string): string | undefined {
-  const trimmedWebsite = website?.trim();
+function normalizeOptionalText(value?: string): string | undefined {
+  const normalizedValue = value?.trim();
 
-  return trimmedWebsite || undefined;
+  return normalizedValue || undefined;
+}
+
+function normalizeWebsite(website?: string): string | undefined {
+  return normalizeOptionalText(website);
 }
 
 function createDefaultMedia(media?: Partial<VendorMedia>): VendorMedia {
@@ -101,6 +123,16 @@ function createDefaultMedia(media?: Partial<VendorMedia>): VendorMedia {
     coverImageUrl: media?.coverImageUrl,
     galleryImages: media?.galleryImages ?? [],
   };
+}
+
+function validateOwnerId(ownerId: string): void {
+  if (!ownerId.trim()) {
+    throw new ServiceError(
+      "An owner ID is required.",
+      "validateOwnerId",
+      "INVALID_OWNER_ID",
+    );
+  }
 }
 
 function validateBusinessName(businessName: string): void {
@@ -119,6 +151,26 @@ function validateBusinessName(businessName: string): void {
       "Business name cannot exceed 120 characters.",
       "validateBusinessName",
       "INVALID_BUSINESS_NAME",
+    );
+  }
+}
+
+function validateShortDescription(shortDescription: string): void {
+  const normalizedDescription = shortDescription.trim();
+
+  if (normalizedDescription.length < 10) {
+    throw new ServiceError(
+      "Short description must contain at least 10 characters.",
+      "validateShortDescription",
+      "INVALID_SHORT_DESCRIPTION",
+    );
+  }
+
+  if (normalizedDescription.length > 250) {
+    throw new ServiceError(
+      "Short description cannot exceed 250 characters.",
+      "validateShortDescription",
+      "INVALID_SHORT_DESCRIPTION",
     );
   }
 }
@@ -143,59 +195,129 @@ function validateDescription(description: string): void {
   }
 }
 
-function validatePrimaryCategory(primaryCategory: string): void {
-  const category = getCategoryById(primaryCategory);
+function validateEmail(email: string): void {
+  const normalizedEmail = normalizeEmail(email);
 
-  if (!category) {
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailPattern.test(normalizedEmail)) {
     throw new ServiceError(
-      "The selected primary category is invalid or inactive.",
-      "validatePrimaryCategory",
+      "Enter a valid business email address.",
+      "validateEmail",
+      "INVALID_EMAIL",
+    );
+  }
+}
+
+function validatePhone(phone: string): void {
+  const normalizedPhone = phone.trim();
+
+  if (normalizedPhone.length < 7) {
+    throw new ServiceError(
+      "Enter a valid business phone number.",
+      "validatePhone",
+      "INVALID_PHONE",
+    );
+  }
+}
+
+function validateServiceCategories(
+  serviceCategories: VendorServiceCategoryInput[],
+): ValidatedServiceCategories {
+  if (!Array.isArray(serviceCategories) || serviceCategories.length === 0) {
+    throw new ServiceError(
+      "At least one service category must be selected.",
+      "validateServiceCategories",
+      "NO_SERVICE_CATEGORIES_SELECTED",
+    );
+  }
+
+  const normalizedSelections = serviceCategories.map((selection) => ({
+    categoryId: selection.categoryId.trim(),
+    businessTypeIds: [
+      ...new Set(
+        selection.businessTypeIds
+          .map((businessTypeId) => businessTypeId.trim())
+          .filter(Boolean),
+      ),
+    ],
+  }));
+
+  const selectedCategoryIds = normalizedSelections.map(
+    (selection) => selection.categoryId,
+  );
+
+  if (selectedCategoryIds.some((categoryId) => !categoryId)) {
+    throw new ServiceError(
+      "Every service selection must include a category.",
+      "validateServiceCategories",
       "INVALID_CATEGORY",
     );
   }
-}
 
-function validateServices(serviceIds: string[]): string[] {
-  const uniqueServiceIds = [...new Set(serviceIds)];
+  const uniqueCategoryIds = [...new Set(selectedCategoryIds)];
 
-  if (uniqueServiceIds.length === 0) {
+  if (uniqueCategoryIds.length !== selectedCategoryIds.length) {
     throw new ServiceError(
-      "At least one service must be selected.",
-      "validateServices",
-      "NO_SERVICES_SELECTED",
+      "The same service category cannot be selected more than once.",
+      "validateServiceCategories",
+      "DUPLICATE_SERVICE_CATEGORY",
     );
   }
 
-  for (const serviceId of uniqueServiceIds) {
-    const service = getBusinessTypeById(serviceId);
+  const allBusinessTypeIds: string[] = [];
 
-    if (!service) {
+  for (const selection of normalizedSelections) {
+    const category = getCategoryById(selection.categoryId);
+
+    if (!category) {
       throw new ServiceError(
-        `The selected service "${serviceId}" is invalid or inactive.`,
-        "validateServices",
-        "INVALID_SERVICE",
+        `The selected category "${selection.categoryId}" is invalid or inactive.`,
+        "validateServiceCategories",
+        "INVALID_CATEGORY",
       );
+    }
+
+    if (selection.businessTypeIds.length === 0) {
+      throw new ServiceError(
+        "At least one service must be selected for every category.",
+        "validateServiceCategories",
+        "NO_SERVICES_SELECTED",
+      );
+    }
+
+    for (const businessTypeId of selection.businessTypeIds) {
+      const businessType = getBusinessTypeById(businessTypeId);
+
+      if (!businessType) {
+        throw new ServiceError(
+          `The selected service "${businessTypeId}" is invalid or inactive.`,
+          "validateServiceCategories",
+          "INVALID_SERVICE",
+        );
+      }
+
+      const matchingCategoryIds = getCategoryIdsFromBusinessTypes([
+        businessTypeId,
+      ]);
+
+      if (!matchingCategoryIds.includes(selection.categoryId)) {
+        throw new ServiceError(
+          `The selected service "${businessTypeId}" does not belong to category "${selection.categoryId}".`,
+          "validateServiceCategories",
+          "SERVICE_CATEGORY_MISMATCH",
+        );
+      }
+
+      allBusinessTypeIds.push(businessTypeId);
     }
   }
 
-  return uniqueServiceIds;
-}
-
-function validatePrimaryCategoryMatchesServices(
-  primaryCategory: string,
-  serviceIds: string[],
-): string[] {
-  const categoryIds = getCategoryIdsFromBusinessTypes(serviceIds);
-
-  if (!categoryIds.includes(primaryCategory)) {
-    throw new ServiceError(
-      "The primary category must match at least one selected service.",
-      "validatePrimaryCategoryMatchesServices",
-      "PRIMARY_CATEGORY_MISMATCH",
-    );
-  }
-
-  return categoryIds;
+  return {
+    primaryCategoryId: uniqueCategoryIds[0],
+    businessCategoryIds: uniqueCategoryIds,
+    businessTypeIds: [...new Set(allBusinessTypeIds)],
+  };
 }
 
 async function ensureSlugAvailable(
@@ -219,16 +341,15 @@ export async function createVendor(
   const operation = "createVendor";
 
   try {
+    validateOwnerId(input.ownerId);
     validateBusinessName(input.businessName);
+    validateShortDescription(input.shortDescription);
     validateDescription(input.description);
-    validatePrimaryCategory(input.primaryCategory);
+    validatePhone(input.phone);
+    validateEmail(input.email);
 
-    const services = validateServices(input.services);
-
-    const categories = validatePrimaryCategoryMatchesServices(
-      input.primaryCategory,
-      services,
-    );
+    const { primaryCategoryId, businessCategoryIds, businessTypeIds } =
+      validateServiceCategories(input.serviceCategories);
 
     const slug = normalizeSlug(input.slug || input.businessName);
 
@@ -240,30 +361,29 @@ export async function createVendor(
       );
     }
 
-    await ensureSlugAvailable(slug);
+    // Temporarily disabled until slug lookup permissions are configured.
+    // await ensureSlugAvailable(slug);
 
     const repositoryInput: CreateVendorInput = {
-      ownerId: input.ownerId,
+      ownerId: input.ownerId.trim(),
+
       businessName: input.businessName.trim(),
       slug,
 
-      primaryCategoryId: input.primaryCategory,
-
-      businessCategoryIds: categories,
-
-      businessTypeIds: services,
+      primaryCategoryId,
+      businessCategoryIds,
+      businessTypeIds,
 
       shortDescription: input.shortDescription.trim(),
-
       description: input.description.trim(),
 
       phone: input.phone.trim(),
       email: normalizeEmail(input.email),
       website: normalizeWebsite(input.website),
 
-      facebook: input.facebook,
-      instagram: input.instagram,
-      tiktok: input.tiktok,
+      facebook: normalizeOptionalText(input.facebook),
+      instagram: normalizeOptionalText(input.instagram),
+      tiktok: normalizeOptionalText(input.tiktok),
 
       media: createDefaultMedia(input.media),
       locations: input.locations ?? [],
@@ -271,25 +391,17 @@ export async function createVendor(
       subscriptionPlan: input.subscriptionPlan,
       subscriptionStatus: input.subscriptionStatus,
 
-      profileCompleted: false,
+      profileCompleted: true,
 
       verified: false,
       featured: false,
-      active: false,
+      active: true,
     };
 
     return await createVendorRecord(repositoryInput);
   } catch (error) {
-    if (error instanceof ServiceError) {
-      throw error;
-    }
-
-    throw new ServiceError(
-      "Failed to create the vendor profile.",
-      operation,
-      "CREATE_VENDOR_FAILED",
-      error,
-    );
+    console.error("Vendor service error:", error);
+    throw error;
   }
 }
 
@@ -300,6 +412,14 @@ export async function updateVendor(
   const operation = "updateVendor";
 
   try {
+    if (!vendorId.trim()) {
+      throw new ServiceError(
+        "A vendor ID is required.",
+        operation,
+        "INVALID_VENDOR_ID",
+      );
+    }
+
     const existingVendor = await getVendorById(vendorId);
 
     if (!existingVendor) {
@@ -314,24 +434,26 @@ export async function updateVendor(
       validateBusinessName(input.businessName);
     }
 
+    if (input.shortDescription !== undefined) {
+      validateShortDescription(input.shortDescription);
+    }
+
     if (input.description !== undefined) {
       validateDescription(input.description);
     }
 
-    const primaryCategory =
-      input.primaryCategory ?? existingVendor.primaryCategoryId;
+    if (input.phone !== undefined) {
+      validatePhone(input.phone);
+    }
 
-    const services =
-      input.services !== undefined
-        ? validateServices(input.services)
-        : existingVendor.businessTypeIds;
+    if (input.email !== undefined) {
+      validateEmail(input.email);
+    }
 
-    validatePrimaryCategory(primaryCategory);
-
-    const categories = validatePrimaryCategoryMatchesServices(
-      primaryCategory,
-      services,
-    );
+    const serviceCategoryUpdates =
+      input.serviceCategories !== undefined
+        ? validateServiceCategories(input.serviceCategories)
+        : undefined;
 
     let slug: string | undefined;
 
@@ -349,15 +471,26 @@ export async function updateVendor(
       await ensureSlugAvailable(slug, vendorId);
     }
 
+    const { serviceCategories: _serviceCategories, ...remainingInput } = input;
+
     const updates: UpdateVendorInput = {
-      ...input,
-      primaryCategoryId: primaryCategory,
-      businessCategoryIds: categories,
-      businessTypeIds: services,
+      ...remainingInput,
     };
+
+    if (serviceCategoryUpdates) {
+      updates.primaryCategoryId = serviceCategoryUpdates.primaryCategoryId;
+
+      updates.businessCategoryIds = serviceCategoryUpdates.businessCategoryIds;
+
+      updates.businessTypeIds = serviceCategoryUpdates.businessTypeIds;
+    }
 
     if (input.businessName !== undefined) {
       updates.businessName = input.businessName.trim();
+    }
+
+    if (input.shortDescription !== undefined) {
+      updates.shortDescription = input.shortDescription.trim();
     }
 
     if (input.description !== undefined) {
@@ -374,6 +507,18 @@ export async function updateVendor(
 
     if (input.website !== undefined) {
       updates.website = normalizeWebsite(input.website);
+    }
+
+    if (input.facebook !== undefined) {
+      updates.facebook = normalizeOptionalText(input.facebook);
+    }
+
+    if (input.instagram !== undefined) {
+      updates.instagram = normalizeOptionalText(input.instagram);
+    }
+
+    if (input.tiktok !== undefined) {
+      updates.tiktok = normalizeOptionalText(input.tiktok);
     }
 
     if (slug !== undefined) {
@@ -396,6 +541,14 @@ export async function updateVendor(
 }
 
 export async function getVendor(vendorId: string): Promise<Vendor> {
+  if (!vendorId.trim()) {
+    throw new ServiceError(
+      "A vendor ID is required.",
+      "getVendor",
+      "INVALID_VENDOR_ID",
+    );
+  }
+
   const vendor = await getVendorById(vendorId);
 
   if (!vendor) {
@@ -418,10 +571,18 @@ export async function getOwnerVendors(ownerId: string): Promise<Vendor[]> {
     );
   }
 
-  return getVendorsByOwnerId(ownerId);
+  return getVendorsByOwnerId(ownerId.trim());
 }
 
 export async function removeVendor(vendorId: string): Promise<void> {
+  if (!vendorId.trim()) {
+    throw new ServiceError(
+      "A vendor ID is required.",
+      "removeVendor",
+      "INVALID_VENDOR_ID",
+    );
+  }
+
   const vendor = await getVendorById(vendorId);
 
   if (!vendor) {

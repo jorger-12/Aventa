@@ -49,7 +49,7 @@ export const FOOD_AND_DRINKS_CATEGORY: BusinessCategory = {
       name: "Private Chef",
     },
     {
-      id: "other",
+      id: "food-other",
       name: "Other",
     },
   ],

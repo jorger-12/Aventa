@@ -81,7 +81,7 @@ export const RENTALS_CATEGORY: BusinessCategory = {
       name: "Photo Booth Rentals",
     },
     {
-      id: "other",
+      id: "rentals-other",
       name: "Other",
     },
   ],

@@ -57,7 +57,7 @@ export const ENTERTAINMENT_CATEGORY: BusinessCategory = {
       name: "Celebrity Impersonator",
     },
     {
-      id: "other",
+      id: "entertainment-other",
       name: "Other",
     },
   ],

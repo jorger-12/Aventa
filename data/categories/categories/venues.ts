@@ -85,7 +85,7 @@ export const VENUES_CATEGORY: BusinessCategory = {
     },
 
     {
-      id: "other",
+      id: "venues-other",
       name: "Other",
     },
   ],

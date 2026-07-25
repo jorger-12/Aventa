@@ -15,6 +15,7 @@ export default function Navbar() {
   const { authenticated, profile, loading, logout } = useAuth();
 
   const [loggingOut, setLoggingOut] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const canAccessVendorDashboard =
     profile?.role === "vendor" || profile?.role === "admin";
@@ -26,6 +27,8 @@ export default function Navbar() {
 
     try {
       setLoggingOut(true);
+
+      setMenuOpen(false);
 
       await logout();
 
@@ -85,10 +88,67 @@ export default function Navbar() {
       <button
         type="button"
         className={styles.menuButton}
-        aria-label="Open navigation menu"
+        aria-label="Toggle navigation menu"
+        onClick={() => setMenuOpen((open) => !open)}
       >
-        ☰
+        {menuOpen ? "✕" : "☰"}
       </button>
+      {menuOpen && (
+        <div className={styles.mobileMenu}>
+          <Link href="/vendors" onClick={() => setMenuOpen(false)}>
+            Browse
+          </Link>
+
+          <Link href="/#how-it-works" onClick={() => setMenuOpen(false)}>
+            How It Works
+          </Link>
+
+          <Link href="/signup" onClick={() => setMenuOpen(false)}>
+            For Vendors
+          </Link>
+
+          <Link href="/#about" onClick={() => setMenuOpen(false)}>
+            About Us
+          </Link>
+
+          {!loading && !authenticated && (
+            <>
+              <Link href="/login" onClick={() => setMenuOpen(false)}>
+                Log In
+              </Link>
+
+              <Link
+                href="/signup"
+                className={styles.mobileSignup}
+                onClick={() => setMenuOpen(false)}
+              >
+                Sign Up
+              </Link>
+            </>
+          )}
+
+          {!loading && authenticated && (
+            <>
+              {canAccessVendorDashboard && (
+                <Link
+                  href="/vendor-dashboard"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Dashboard
+                </Link>
+              )}
+
+              <button
+                type="button"
+                onClick={handleLogout}
+                disabled={loggingOut}
+              >
+                {loggingOut ? "Logging Out..." : "Log Out"}
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </nav>
   );
 }

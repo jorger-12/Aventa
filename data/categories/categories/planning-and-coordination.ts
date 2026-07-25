@@ -41,7 +41,7 @@ export const PLANNING_AND_COORDINATION_CATEGORY: BusinessCategory = {
       name: "Event Consultant",
     },
     {
-      id: "other",
+      id: "planning-other",
       name: "Other",
     },
   ],

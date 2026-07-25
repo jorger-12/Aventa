@@ -10,6 +10,8 @@ import LocationStep, { type LocationStepData } from "../steps/LocationStep";
 
 import MediaStep, { type MediaStepData } from "../steps/MediaStep";
 
+import ReviewStep from "../steps/ReviewStep";
+
 import type { OnboardingStep } from "../types";
 
 import styles from "../VendorOnboarding.module.css";
@@ -32,6 +34,7 @@ interface OnboardingStepRendererProps {
   onSocialChange: (value: SocialStepData) => void;
   onLocationChange: (value: LocationStepData) => void;
   onMediaChange: (value: MediaStepData) => void;
+  onSelectStep: (step: OnboardingStep) => void;
 }
 
 export default function OnboardingStepRenderer({
@@ -50,6 +53,7 @@ export default function OnboardingStepRenderer({
   onSocialChange,
   onLocationChange,
   onMediaChange,
+  onSelectStep,
 }: OnboardingStepRendererProps) {
   function renderStep() {
     switch (currentStep) {
@@ -140,7 +144,27 @@ export default function OnboardingStepRenderer({
               Review your business profile before submitting it.
             </p>
 
-            <p>The review section will be added after Media.</p>
+            <ReviewStep
+              value={{
+                businessName: businessData.businessName,
+                shortDescription: businessData.shortDescription,
+                description: businessData.description,
+
+                serviceCategories: servicesData.serviceCategories,
+
+                phone: contactData.phone,
+                email: contactData.email,
+                website: contactData.website,
+
+                facebook: socialData.facebook,
+                instagram: socialData.instagram,
+                tiktok: socialData.tiktok,
+
+                location: locationData,
+                media: mediaData,
+              }}
+              onEditStep={onSelectStep}
+            />
           </>
         );
 

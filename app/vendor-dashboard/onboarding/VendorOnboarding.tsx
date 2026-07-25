@@ -10,6 +10,10 @@ import OnboardingNavigation from "./components/OnboardingNavigation";
 
 import OnboardingStepRenderer from "./components/OnboardingStepRenderer";
 
+import { useRouter } from "next/navigation";
+
+import { submitVendorOnboarding } from "@/lib/services/vendor-onboarding-service";
+
 import {
   initialVendorProfile,
   type VendorOnboardingData,
@@ -37,6 +41,10 @@ const steps: OnboardingStepItem[] = [
 ];
 
 export default function VendorOnboarding() {
+  const router = useRouter();
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [currentStep, setCurrentStep] = useState<OnboardingStep>("business");
 
   const [vendorProfile, setVendorProfile] =
@@ -54,8 +62,7 @@ export default function VendorOnboarding() {
   function updateServicesData(value: ServicesStepData) {
     setVendorProfile((currentProfile) => ({
       ...currentProfile,
-      primaryCategoryId: value.primaryCategoryId,
-      businessTypeIds: value.businessTypeIds,
+      serviceCategories: value.serviceCategories,
     }));
   }
 
@@ -142,6 +149,29 @@ export default function VendorOnboarding() {
       (currentStep === "location" && !isLocationStepComplete())
     );
 
+  async function handleSubmit() {
+    try {
+      setIsSubmitting(true);
+
+      console.log("Submitting vendor profile:", vendorProfile);
+
+      const vendor = await submitVendorOnboarding(vendorProfile);
+
+      router.push(`/vendor-dashboard/success?vendor=${vendor.id}`);
+    } catch (error) {
+      console.error("Vendor submission failed:", error);
+
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Something went wrong creating your vendor profile.";
+
+      alert(message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <main className={styles.page}>
       <section className={styles.container}>
@@ -165,8 +195,7 @@ export default function VendorOnboarding() {
               description: vendorProfile.description,
             }}
             servicesData={{
-              primaryCategoryId: vendorProfile.primaryCategoryId,
-              businessTypeIds: vendorProfile.businessTypeIds,
+              serviceCategories: vendorProfile.serviceCategories,
             }}
             contactData={{
               phone: vendorProfile.phone,
@@ -186,13 +215,17 @@ export default function VendorOnboarding() {
             onSocialChange={updateSocialData}
             onLocationChange={updateLocationData}
             onMediaChange={updateMediaData}
+            onSelectStep={setCurrentStep}
           />
 
           <OnboardingNavigation
             canGoBack={currentStepIndex > 0}
             canContinue={canContinue}
+            isLastStep={currentStep === "review"}
+            isSubmitting={isSubmitting}
             onBack={goToPreviousStep}
             onContinue={goToNextStep}
+            onSubmit={handleSubmit}
           />
         </section>
       </section>

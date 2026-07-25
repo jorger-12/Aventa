@@ -49,7 +49,7 @@ export const TRANSPORTATION_CATEGORY: BusinessCategory = {
       name: "Party Boat Charter",
     },
     {
-      id: "other",
+      id: "transportaion-other",
       name: "Other",
     },
   ],

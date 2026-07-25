@@ -49,7 +49,7 @@ export const BEAUTY_AND_STYLING_CATEGORY: BusinessCategory = {
       name: "Brow Artist",
     },
     {
-      id: "other",
+      id: "beauty-other",
       name: "Other",
     },
   ],

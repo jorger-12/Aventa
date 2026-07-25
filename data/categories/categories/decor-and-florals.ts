@@ -53,7 +53,7 @@ export const DECOR_AND_FLORALS_CATEGORY: BusinessCategory = {
       name: "Marquee Letters",
     },
     {
-      id: "other",
+      id: "decor-other",
       name: "Other",
     },
   ],

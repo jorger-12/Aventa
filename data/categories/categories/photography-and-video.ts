@@ -41,7 +41,7 @@ export const PHOTOGRAPHY_AND_VIDEO_CATEGORY: BusinessCategory = {
       name: "Editing Service",
     },
     {
-      id: "other",
+      id: "photography-other",
       name: "Other",
     },
   ],

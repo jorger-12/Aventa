@@ -53,7 +53,7 @@ export const EVENT_STAFF_AND_SUPPORT_CATEGORY: BusinessCategory = {
       name: "Brand Ambassadors",
     },
     {
-      id: "other",
+      id: "staff-other",
       name: "Other",
     },
   ],
