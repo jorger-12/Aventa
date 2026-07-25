@@ -243,7 +243,7 @@ export async function getVerifiedUserDestination(
       const vendors = await getOwnerVendors(userId);
 
       if (vendors.length === 0) {
-        return "/vendor-onboarding";
+        return "/vendor-dashboard/onboarding";
       }
 
       return "/vendor-dashboard";

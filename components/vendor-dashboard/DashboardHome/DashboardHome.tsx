@@ -108,7 +108,10 @@ export default function DashboardHome() {
             onboarding to begin managing your listing.
           </p>
 
-          <Link href="/vendor-onboarding" className={styles.primaryButton}>
+          <Link
+            href="/vendor-dashboard/onboarding"
+            className={styles.primaryButton}
+          >
             Complete onboarding
           </Link>
         </div>
