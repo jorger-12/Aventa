@@ -15,6 +15,8 @@ import {
   updateEmailVerification,
 } from "@/lib/repositories";
 
+import { getOwnerVendors } from "@/lib/services/vendor.service";
+
 import {
   validatePasswordResetEmail,
   validateSignInInput,
@@ -216,6 +218,47 @@ export async function refreshCurrentUser(): Promise<{
       "Unable to refresh your verification status.",
       operation,
       "EMAIL_VERIFICATION_REFRESH_FAILED",
+      error,
+    );
+  }
+}
+
+export async function getVerifiedUserDestination(
+  userId: string,
+): Promise<string> {
+  const operation = "getVerifiedUserDestination";
+
+  try {
+    const profile = await getUserById(userId);
+
+    if (!profile) {
+      throw new ServiceError(
+        "Your account profile could not be found.",
+        operation,
+        "USER_PROFILE_NOT_FOUND",
+      );
+    }
+
+    if (profile.role === "vendor" || profile.role === "admin") {
+      const vendors = await getOwnerVendors(userId);
+
+      if (vendors.length === 0) {
+        return "/vendor-onboarding";
+      }
+
+      return "/vendor-dashboard";
+    }
+
+    return "/";
+  } catch (error) {
+    if (error instanceof ServiceError) {
+      throw error;
+    }
+
+    throw new ServiceError(
+      "Unable to determine where to continue.",
+      operation,
+      "DESTINATION_LOOKUP_FAILED",
       error,
     );
   }

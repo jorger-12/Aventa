@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { getCurrentAuthUser } from "@/lib/auth";
 import {
+  getVerifiedUserDestination,
   refreshCurrentUser,
   resendVerificationEmail,
   signOut,
@@ -41,7 +42,11 @@ export default function VerifyEmail() {
         }
 
         if (refreshedUser.emailVerified) {
-          router.replace("/");
+          const destination = await getVerifiedUserDestination(
+            refreshedUser.userId,
+          );
+
+          router.replace(destination);
           router.refresh();
 
           return true;
@@ -75,10 +80,27 @@ export default function VerifyEmail() {
       return;
     }
 
+    const userId = currentUser.uid;
+
     setEmail(currentUser.email ?? "");
 
     if (currentUser.emailVerified) {
-      router.replace("/");
+      async function redirectVerifiedUser() {
+        try {
+          const destination = await getVerifiedUserDestination(userId);
+
+          router.replace(destination);
+          router.refresh();
+        } catch (error) {
+          setErrorMessage(
+            error instanceof Error
+              ? error.message
+              : "Unable to continue to your account.",
+          );
+        }
+      }
+
+      void redirectVerifiedUser();
       return;
     }
 
